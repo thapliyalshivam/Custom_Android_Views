@@ -1,7 +1,9 @@
 package com.example.tshivam.customview;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.support.annotation.Nullable;
@@ -11,11 +13,17 @@ import android.view.View;
 public class WaterView extends View {
 
     Paint ctx;
+
+    Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+   // Canvas canvas = new Canvas(bitmap);
+
     int a = 0;
 
     public WaterView(Context context) {
         super(context);
         init();
+
+
     }
 
     public WaterView(Context context, @Nullable AttributeSet attrs) {
@@ -49,6 +57,7 @@ public class WaterView extends View {
         }
         path.close();
         return path;
+
     }
 
 
@@ -58,6 +67,14 @@ public class WaterView extends View {
     }
 
     public void init(){
+        Paint wavePaint = new Paint();
+        Canvas cc = new Canvas(bitmap);
+        wavePaint.setColor(Color.rgb(100,0,0));
+        wavePaint.setStrokeWidth(2);
+        wavePaint.setAntiAlias(true);
+        cc.drawPath(createPath(10,200),wavePaint);
+
+
          ctx = new Paint();
         ctx.setStrokeWidth(2);
         ctx.setAntiAlias(true);
@@ -67,8 +84,9 @@ public class WaterView extends View {
     protected void onDraw(Canvas canvas) {
        // super.onDraw(canvas);
         update();
+        canvas.drawBitmap(bitmap,150,150,ctx);
         canvas.drawLine(a,0,a,200,ctx);
-        canvas.drawPath(createPath(5,20),ctx);
+        //canvas.drawPath(createPath(5,20),ctx);
 
     }
 }
