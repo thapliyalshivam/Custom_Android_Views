@@ -87,7 +87,7 @@ public class WaterView extends View {
         update();
         canvas.drawBitmap(bitmap,150,150,ctx);
         canvas.drawLine(a,0,a,200,ctx);
-        //canvas.drawPath(createPath(5,20),ctx);
+        canvas.drawPath(createPath(5,20),ctx);
 
     }
 }
