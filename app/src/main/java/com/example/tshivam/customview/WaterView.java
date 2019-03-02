@@ -2,10 +2,13 @@ package com.example.tshivam.customview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Shader;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -14,7 +17,11 @@ public class WaterView extends View {
 
     Paint ctx;
 
-    Bitmap bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888);
+    private BitmapShader dotted;
+    private Matrix tran = new Matrix();
+
+
+    Bitmap bitmap = Bitmap.createBitmap(20, 20, Bitmap.Config.ARGB_8888);
    // Canvas canvas = new Canvas(bitmap);
 
     int a = 0;
@@ -42,10 +49,12 @@ public class WaterView extends View {
     }
 
 
-
+    // get path as pe sides and radius
     public Path createPath(int sides, float radius ) {
-        int cx=10;
-        int cy = 10;
+
+        // get the starting point
+        int cx=0;
+        int cy = 0;
         Path path = new Path();
         double angle = 2.0 * Math.PI / sides;
         path.moveTo(
@@ -63,20 +72,24 @@ public class WaterView extends View {
 
 
     public void update(){
-        a= a>10?0:a+1;
+        a= a>20?0:a+1;
         postInvalidate();
     }
 
     public void init(){
+
         Paint wavePaint = new Paint();
         Canvas cc = new Canvas(bitmap);
-        wavePaint.setColor(Color.rgb(100,0,0));
+
+        wavePaint.setColor(Color.rgb(250,0,0));
         wavePaint.setStrokeWidth(2);
         wavePaint.setAntiAlias(true);
-        cc.drawPath(createPath(10,200),wavePaint);
+        cc.drawPath(createPath(10,8),wavePaint);
 
+        dotted = new BitmapShader(bitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
 
-         ctx = new Paint();
+        ctx = new Paint();
+        ctx.setShader(dotted);
         ctx.setStrokeWidth(2);
         ctx.setAntiAlias(true);
 
@@ -85,8 +98,12 @@ public class WaterView extends View {
     protected void onDraw(Canvas canvas) {
        // super.onDraw(canvas);
         update();
+        tran.postTranslate(a,a);
+        tran.postScale(1, 4);
+        dotted.setLocalMatrix(tran);
         canvas.drawBitmap(bitmap,150,150,ctx);
-        canvas.drawLine(a,0,a,200,ctx);
+        canvas.drawOval(0,0,200,200,ctx);
+        //canvas.drawLine(a,0,a,200,ctx);
         canvas.drawPath(createPath(5,20),ctx);
 
     }
